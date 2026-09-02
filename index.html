@@ -97,12 +97,17 @@
                 </button>
 
                 <button
-                    class="header-icon desktop-action"
+                    class="header-icon desktop-action account-button"
                     type="button"
-                    aria-label="Tài khoản"
+                    aria-label="Tài khoản và Thẻ Xôi Thân Thiết"
                     data-account-button
                 >
                     <span class="icon-user"></span>
+                    <span
+                        class="loyalty-badge"
+                        data-loyalty-badge
+                        hidden
+                    >0</span>
                 </button>
 
                 <button
@@ -142,6 +147,18 @@
             <a href="#about">Về chúng tôi</a>
             <a href="#news">Tin tức</a>
             <a href="#contact">Liên hệ</a>
+            <button
+                type="button"
+                class="mobile-account-link"
+                data-account-button
+            >
+                Tài khoản &amp; Thẻ Xôi Thân Thiết
+                <span
+                    class="loyalty-badge"
+                    data-loyalty-badge
+                    hidden
+                >0</span>
+            </button>
         </div>
     </header>
 
@@ -1598,16 +1615,31 @@
                             <input type="radio" name="payment" value="bank">
                             <span class="payment-method-card">
                                 <strong>Chuyển khoản ngân hàng</strong>
-                                <small>Thông tin chuyển khoản sẽ được gửi qua số điện thoại sau khi đặt.</small>
+                                <small>Chuyển nhanh qua số điện thoại (Napas 247).</small>
                             </span>
                         </label>
+                        <div class="payment-detail-panel" data-payment-detail="bank" hidden>
+                            <span class="payment-detail-label">Thông tin chuyển khoản</span>
+                            <div class="payment-detail-row"><span>Nhận qua số điện thoại</span><strong>0966 431 213</strong></div>
+                            <div class="payment-detail-row"><span>Chủ tài khoản</span><strong>XÔI HỒNG</strong></div>
+                            <div class="payment-detail-row"><span>Nội dung chuyển khoản</span><strong data-payment-order-note>Mã đơn hàng (hiện sau khi đặt)</strong></div>
+                            <p class="payment-detail-note">Đơn sẽ được xác nhận ngay khi nhận được chuyển khoản đúng nội dung.</p>
+                        </div>
+
                         <label class="payment-method-option">
                             <input type="radio" name="payment" value="ewallet">
                             <span class="payment-method-card">
                                 <strong>Ví điện tử (Momo / ZaloPay)</strong>
-                                <small>Quét mã QR sau khi đơn được xác nhận.</small>
+                                <small>Chuyển trực tiếp tới số điện thoại cửa hàng.</small>
                             </span>
                         </label>
+                        <div class="payment-detail-panel" data-payment-detail="ewallet" hidden>
+                            <span class="payment-detail-label">Chuyển qua ví điện tử</span>
+                            <div class="payment-detail-row"><span>Số Momo / ZaloPay</span><strong>0966 431 213</strong></div>
+                            <div class="payment-detail-row"><span>Tên hiển thị</span><strong>Xôi Hồng</strong></div>
+                            <div class="payment-detail-row"><span>Nội dung chuyển khoản</span><strong data-payment-order-note>Mã đơn hàng (hiện sau khi đặt)</strong></div>
+                            <p class="payment-detail-note">Mở app Momo/ZaloPay → Chuyển tiền → nhập đúng số điện thoại trên.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="checkout-summary" data-checkout-summary></div>
@@ -1680,6 +1712,7 @@
             <p class="order-success-note" data-order-success-payment-note>Chúng tôi sẽ liên hệ qua số điện thoại bạn đã cung cấp nếu cần xác nhận thêm.</p>
             <div class="order-success-actions">
                 <button class="button button-primary" type="button" data-order-track-open>Theo dõi đơn hàng</button>
+                <button class="button button-secondary" type="button" data-order-loyalty-open>🎫 Xem Thẻ Xôi Thân Thiết</button>
                 <button class="button button-secondary" type="button" data-order-success-close>Tiếp tục xem thực đơn</button>
             </div>
         </section>
