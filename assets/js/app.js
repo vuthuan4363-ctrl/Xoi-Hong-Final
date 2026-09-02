@@ -15,6 +15,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }[character]));
 
     // ---------------------------------------------------------
+    // HERO BACKGROUND SLIDER
+    // ---------------------------------------------------------
+    const heroSlides = $$('[data-hero-slide]');
+    const heroDots = $$('[data-hero-dot]');
+    let heroIndex = 0;
+    let heroTimer = null;
+
+    const showHeroSlide = (index) => {
+        heroSlides.forEach((img, i) => img.classList.toggle('is-active', i === index));
+        heroDots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        heroIndex = index;
+    };
+
+    const nextHeroSlide = () => {
+        showHeroSlide((heroIndex + 1) % heroSlides.length);
+    };
+
+    const startHeroTimer = () => {
+        clearInterval(heroTimer);
+        if (heroSlides.length > 1) {
+            heroTimer = setInterval(nextHeroSlide, 5500);
+        }
+    };
+
+    if (heroSlides.length) {
+        heroDots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                showHeroSlide(i);
+                startHeroTimer();
+            });
+        });
+        startHeroTimer();
+    }
+
+    // ---------------------------------------------------------
     // MOBILE MENU
     // ---------------------------------------------------------
     const menuToggle = $('[data-menu-toggle]');
@@ -286,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------------------------------
     // CART
     // ---------------------------------------------------------
-    const CART_KEY = 'xoi-viet-cart-v2';
+    const CART_KEY = 'xoi-hong-cart-v2';
     const cartDrawer = $('[data-cart-drawer]');
     const cartButton = $('[data-cart-button]');
     const cartClose = $('[data-cart-close]');
@@ -518,12 +553,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const orderSuccessCode = $('[data-order-success-code]');
     const orderSuccessTotal = $('[data-order-success-total]');
     const orderSuccessEta = $('[data-order-success-eta]');
+    const orderSuccessPayment = $('[data-order-success-payment]');
+    const orderSuccessPaymentNote = $('[data-order-success-payment-note]');
 
-    const openOrderSuccess = ({ name, code, total, eta }) => {
+    const PAYMENT_LABELS = {
+        cod: 'Thanh toán khi nhận hàng (COD)',
+        bank: 'Chuyển khoản ngân hàng',
+        ewallet: 'Ví điện tử (Momo / ZaloPay)',
+    };
+
+    const PAYMENT_NOTES = {
+        cod: 'Vui lòng chuẩn bị đúng số tiền khi nhận xôi. Chúng tôi sẽ liên hệ qua số điện thoại bạn đã cung cấp nếu cần xác nhận thêm.',
+        bank: 'Thông tin số tài khoản sẽ được gửi qua số điện thoại bạn đã cung cấp trong ít phút.',
+        ewallet: 'Mã QR thanh toán sẽ được gửi qua số điện thoại bạn đã cung cấp trong ít phút.',
+    };
+
+    const openOrderSuccess = ({ name, code, total, eta, payment }) => {
         if (orderSuccessName) orderSuccessName.textContent = name;
         if (orderSuccessCode) orderSuccessCode.textContent = code;
         if (orderSuccessTotal) orderSuccessTotal.textContent = formatPrice(total);
         if (orderSuccessEta) orderSuccessEta.textContent = eta;
+        if (orderSuccessPayment) orderSuccessPayment.textContent = PAYMENT_LABELS[payment] || PAYMENT_LABELS.cod;
+        if (orderSuccessPaymentNote) orderSuccessPaymentNote.textContent = PAYMENT_NOTES[payment] || PAYMENT_NOTES.cod;
 
         orderSuccessModal?.classList.add('is-open');
         orderSuccessModal?.setAttribute('aria-hidden', 'false');
@@ -542,11 +593,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const saveOrderHistory = (order) => {
         try {
-            const raw = window.localStorage.getItem('xvd-order-history');
+            const raw = window.localStorage.getItem('xoi-hong-order-history');
             const history = raw ? JSON.parse(raw) : [];
             history.unshift(order);
             window.localStorage.setItem(
-                'xvd-order-history',
+                'xoi-hong-order-history',
                 JSON.stringify(history.slice(0, 20)),
             );
         } catch (error) {
@@ -556,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getOrderHistory = () => {
         try {
-            const raw = window.localStorage.getItem('xvd-order-history');
+            const raw = window.localStorage.getItem('xoi-hong-order-history');
             return raw ? JSON.parse(raw) : [];
         } catch (error) {
             return [];
@@ -663,6 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = (formData.get('name') || '').toString().trim();
         const phoneRaw = (formData.get('phone') || '').toString().trim();
         const address = (formData.get('address') || '').toString().trim();
+        const payment = (formData.get('payment') || 'cod').toString();
         const phoneDigits = phoneRaw.replace(/[\s.-]/g, '');
         const isValidVietnamesePhone = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/.test(phoneDigits);
 
@@ -684,7 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
         phoneInput?.classList.remove('has-error');
         if (phoneError) phoneError.hidden = true;
 
-        const orderCode = `XVD${Date.now().toString().slice(-6)}`;
+        const orderCode = `XH${Date.now().toString().slice(-6)}`;
 
         const total = cart.reduce(
             (sum, item) => sum + item.price * item.quantity,
@@ -701,12 +753,15 @@ document.addEventListener('DOMContentLoaded', () => {
             phone: phoneDigits,
             address,
             note: formData.get('note') || '',
+            payment,
             items: cart,
             total,
             createdAt: new Date().toISOString(),
         });
 
         lastOrderCode = orderCode;
+
+        addLoyaltyStamp();
 
         cart = [];
         saveCart();
@@ -719,16 +774,65 @@ document.addEventListener('DOMContentLoaded', () => {
             code: orderCode,
             total,
             eta: `~${etaMinutes} phút (khoảng ${etaTime})`,
+            payment,
         });
     });
 
     // ---------------------------------------------------------
-    // ACCOUNT NOTICE
+    // ---------------------------------------------------------
+    // ACCOUNT NOTICE / LOYALTY STAMP CARD
     // ---------------------------------------------------------
     const accountButton = $('[data-account-button]');
     const accountModal = $('[data-account-modal]');
+    const loyaltyStampsEl = $('[data-loyalty-stamps]');
+    const loyaltyStatusEl = $('[data-loyalty-status]');
+
+    const LOYALTY_KEY = 'xoi-hong-loyalty-stamps';
+    const LOYALTY_GOAL = 5;
+
+    const getLoyaltyStamps = () => {
+        const raw = Number(window.localStorage.getItem(LOYALTY_KEY) || '0');
+        return Number.isFinite(raw) ? Math.max(0, Math.min(raw, LOYALTY_GOAL)) : 0;
+    };
+
+    const setLoyaltyStamps = (value) => {
+        try {
+            window.localStorage.setItem(LOYALTY_KEY, String(value));
+        } catch (error) {
+            /* localStorage unavailable, ignore */
+        }
+    };
+
+    const renderLoyaltyCard = () => {
+        if (!loyaltyStampsEl) return;
+        const stamps = getLoyaltyStamps();
+
+        loyaltyStampsEl.innerHTML = Array.from({ length: LOYALTY_GOAL }, (_, i) => `
+            <span class="loyalty-stamp ${i < stamps ? 'is-filled' : ''}" aria-hidden="true">
+                ${i < stamps ? '✓' : ''}
+            </span>
+        `).join('');
+
+        if (loyaltyStatusEl) {
+            if (stamps >= LOYALTY_GOAL) {
+                loyaltyStatusEl.textContent = 'Đủ 5 tem rồi! Nói với nhân viên để nhận phần xôi miễn phí ở đơn tiếp theo.';
+            } else if (stamps === 0) {
+                loyaltyStatusEl.textContent = 'Đặt món đầu tiên để nhận tem nhé!';
+            } else {
+                loyaltyStatusEl.textContent = `Còn ${LOYALTY_GOAL - stamps} lần đặt nữa là được tặng 1 phần xôi miễn phí.`;
+            }
+        }
+    };
+
+    const addLoyaltyStamp = () => {
+        const current = getLoyaltyStamps();
+        const next = current >= LOYALTY_GOAL ? 0 : current + 1;
+        setLoyaltyStamps(next);
+        renderLoyaltyCard();
+    };
 
     const openAccount = () => {
+        renderLoyaltyCard();
         accountModal?.classList.add('is-open');
         accountModal?.setAttribute('aria-hidden', 'false');
         document.body.classList.add('modal-open');

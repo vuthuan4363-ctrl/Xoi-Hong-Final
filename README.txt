@@ -1,4 +1,4 @@
-XÔI VIỆT ĐƯƠNG ĐẠI — STATIC WEBSITE
+XÔI HỒNG — STATIC WEBSITE
 
 YÊU CẦU DUY NHẤT: Node.js đã cài trên máy (đã có sẵn theo xác nhận của bạn).
 KHÔNG cần: PHP, XAMPP, Composer, Python, npm install.
