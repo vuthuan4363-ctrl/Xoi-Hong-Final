@@ -1710,6 +1710,8 @@
                 </div>
             </div>
             <p class="order-success-note" data-order-success-payment-note>Chúng tôi sẽ liên hệ qua số điện thoại bạn đã cung cấp nếu cần xác nhận thêm.</p>
+
+            <p class="order-success-loyalty" data-order-success-loyalty hidden></p>
             <div class="order-success-actions">
                 <button class="button button-primary" type="button" data-order-track-open>Theo dõi đơn hàng</button>
                 <button class="button button-secondary" type="button" data-order-loyalty-open>🎫 Xem Thẻ Xôi Thân Thiết</button>
@@ -1769,14 +1771,25 @@
             <button class="modal-close" type="button" data-account-close aria-label="Đóng">×</button>
             <div class="eyebrow">THẺ XÔI THÂN THIẾT</div>
             <h2>Ăn đủ 5 lần,<br><em>phần thứ 6 mời bạn.</em></h2>
-            <p>Mỗi lần đặt món thành công, bạn nhận 1 tem. Đủ 5 tem, phần xôi tiếp theo miễn phí — cách Xôi Hồng cảm ơn khách quen.</p>
+            <p>Mỗi lần đặt món thành công với một số điện thoại, số đó được cộng 1 tem. Đủ 5 tem, phần xôi tiếp theo miễn phí — cách Xôi Hồng cảm ơn khách quen.</p>
+
+            <form class="loyalty-phone-form" data-loyalty-phone-form>
+                <label>
+                    Tra cứu bằng số điện thoại
+                    <div class="loyalty-phone-row">
+                        <input type="tel" placeholder="Nhập số điện thoại đã đặt món" data-loyalty-phone-input>
+                        <button type="submit" class="button button-secondary">Xem tem</button>
+                    </div>
+                </label>
+            </form>
+            <p class="loyalty-phone-label" data-loyalty-phone-label>Nhập số điện thoại đã dùng khi đặt món để xem tem</p>
 
             <div class="loyalty-card">
                 <div class="loyalty-stamps" data-loyalty-stamps></div>
                 <p class="loyalty-status" data-loyalty-status>Đặt món đầu tiên để nhận tem nhé!</p>
             </div>
 
-            <p class="account-note">Tính năng tài khoản đầy đủ sẽ kết nối với hệ thống khách hàng khi backend đặt món được hoàn thiện. Hiện tại tem được lưu trên thiết bị này.</p>
+            <p class="account-note">Tem được ghi nhận theo số điện thoại bạn nhập lúc đặt món, lưu trên thiết bị này. Tính năng tài khoản đầy đủ (đồng bộ mọi thiết bị) sẽ có khi backend đặt món được hoàn thiện.</p>
             <button class="button button-secondary" type="button" data-account-track-open>Xem đơn gần nhất</button>
             <button class="button button-secondary" type="button" data-account-close>Đã hiểu</button>
         </section>
