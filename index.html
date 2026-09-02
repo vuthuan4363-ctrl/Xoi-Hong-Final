@@ -123,42 +123,41 @@
                     >0</span>
                 </button>
 
-                <button
-                    class="menu-toggle"
-                    type="button"
-                    aria-label="Mở menu"
-                    aria-expanded="false"
-                    data-menu-toggle
-                >
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
+                <details class="menu-toggle-native" data-menu-toggle-native>
+                    <summary
+                        class="menu-toggle"
+                        aria-label="Mở menu"
+                    >
+                        <span></span>
+                        <span></span>
+                    </summary>
 
-        <div
-            class="mobile-menu"
-            data-mobile-menu
-        >
-            <a href="#home">Trang chủ</a>
-            <a href="#menu">Thực đơn</a>
-            <a href="#live">Mẻ xôi live</a>
-            <a href="#story">Câu chuyện</a>
-            <a href="#about">Về chúng tôi</a>
-            <a href="#news">Tin tức</a>
-            <a href="#contact">Liên hệ</a>
-            <button
-                type="button"
-                class="mobile-account-link"
-                data-account-button
-            >
-                Tài khoản &amp; Thẻ Xôi Thân Thiết
-                <span
-                    class="loyalty-badge"
-                    data-loyalty-badge
-                    hidden
-                >0</span>
-            </button>
+                    <div
+                        class="mobile-menu"
+                        data-mobile-menu
+                    >
+                        <a href="#home">Trang chủ</a>
+                        <a href="#menu">Thực đơn</a>
+                        <a href="#live">Mẻ xôi live</a>
+                        <a href="#story">Câu chuyện</a>
+                        <a href="#about">Về chúng tôi</a>
+                        <a href="#news">Tin tức</a>
+                        <a href="#contact">Liên hệ</a>
+                        <button
+                            type="button"
+                            class="mobile-account-link"
+                            data-account-button
+                        >
+                            Tài khoản &amp; Thẻ Xôi Thân Thiết
+                            <span
+                                class="loyalty-badge"
+                                data-loyalty-badge
+                                hidden
+                            >0</span>
+                        </button>
+                    </div>
+                </details>
+            </div>
         </div>
     </header>
 
@@ -1092,6 +1091,19 @@
 
 
         
+        <section class="loyalty-showcase">
+            <div class="container loyalty-showcase-inner">
+                <div class="loyalty-showcase-badge">🎫</div>
+                <div class="loyalty-showcase-text">
+                    <div class="eyebrow">Ưu đãi khách quen</div>
+                    <h3>Thẻ Xôi Thân Thiết — ăn đủ 5 lần, phần thứ 6 mời bạn.</h3>
+                    <p>Mỗi lần đặt món, số điện thoại bạn dùng sẽ tự được cộng 1 tem. Đủ 5 tem, phần xôi tiếp theo hoàn toàn miễn phí.</p>
+                </div>
+                <button type="button" class="button button-primary loyalty-showcase-cta" data-account-button>Xem tem của tôi</button>
+            </div>
+        </section>
+
+
         <section
             id="about"
             class="about-section"
