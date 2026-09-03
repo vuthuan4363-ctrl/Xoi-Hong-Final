@@ -47,6 +47,63 @@
         rel="stylesheet"
     >
     <link rel="stylesheet" href="assets/css/app.css">
+    <script>
+        // Global error banner — catches ANY JS error on the page (even if
+        // app.js fails to load entirely) and shows it visibly, no DevTools
+        // needed. Must be the very first script on the page.
+        (function () {
+            var shown = false;
+            function showBanner(msg) {
+                try {
+                    var box = document.createElement('div');
+                    box.id = 'js-error-banner';
+                    box.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999999;background:#c0392b;color:#fff;padding:10px 14px;font:12px/1.5 monospace;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto;';
+                    box.textContent = '[LOI JS] ' + msg;
+                    if (document.body) {
+                        document.body.appendChild(box);
+                    } else {
+                        document.addEventListener('DOMContentLoaded', function () {
+                            document.body.appendChild(box);
+                        });
+                    }
+                } catch (e) { /* give up silently */ }
+            }
+            window.addEventListener('error', function (e) {
+                if (shown) return;
+                shown = true;
+                showBanner((e.message || 'unknown error') + ' @ ' + (e.filename || '?') + ':' + (e.lineno || '?'));
+            });
+            window.addEventListener('unhandledrejection', function (e) {
+                if (shown) return;
+                shown = true;
+                showBanner('Promise rejected: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)));
+            });
+        })();
+
+        // Independent failsafe: works even if app.js throws an error
+        // somewhere else, so the account/loyalty modal never goes fully dead.
+        window.__openAccountFailsafe = function () {
+            var modal = document.querySelector('[data-account-modal]');
+            if (!modal) return;
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+        };
+        document.addEventListener('click', function (e) {
+            var trigger = e.target.closest && e.target.closest('[data-account-button]');
+            if (trigger) window.__openAccountFailsafe();
+
+            var closer = e.target.closest && e.target.closest('[data-account-close]');
+            if (closer) {
+                var modal = document.querySelector('[data-account-modal]');
+                if (modal) {
+                    modal.classList.remove('is-open');
+                    modal.setAttribute('aria-hidden', 'true');
+                    document.body.classList.remove('modal-open');
+                }
+            }
+        }, true);
+    </script>
     <script defer src="assets/js/app.js"></script>
 </head>
 
@@ -1471,7 +1528,7 @@
             <div class="footer-bottom">
 
                 <span>
-                    © 2026 Xôi Hồng.
+                    © 2026 Xôi Hồng. <span style="opacity:.35">build v10</span> <span class="js-ready-dot" title="Trạng thái JavaScript">●</span>
                     All rights reserved.
                 </span>
 
